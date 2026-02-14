@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Addiction Killer - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-shield-slash"></i> Addiction Killer</h1>
+            <a href="{{ url_for('addiction.create') }}" class="btn btn-sovereign">
+                <i class="bi bi-plus-circle"></i> New Killer
+            </a>
+        </div>
+        
+        <div class="alert alert-info mb-4">
+            <i class="bi bi-info-circle"></i> When you feel a craving, use one of your techniques to fight it!
+        </div>
+        
+        {% if killers %}
+            <div class="row">
+                {% for killer in killers %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-shield-check"></i> {{ killer.name }}
+                            </h5>
+                            {% if killer.target_addiction %}
+                            <p class="text-muted small">Target: {{ killer.target_addiction }}</p>
+                            {% endif %}
+                            <p class="card-text small">{{ technique_info[killer.technique].description if killer.technique in technique_info }}</p>
+                            <div class="mb-2">
+                                <span class="badge bg-primary">Used: {{ killer.times_used }}x</span>
+                                {% if killer.effectiveness_rating %}
+                                <span class="badge bg-success">Rating: {{ killer.effectiveness_rating }}/5</span>
+                                {% endif %}
+                            </div>
+                            <a href="{{ url_for('addiction.use', killer_id=killer.id) }}" class="btn btn-danger w-100">
+                                <i class="bi bi-lightning"></i> Use Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">Create an addiction killer to help fight your cravings!</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Log Mood - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="bi bi-emoji-smile"></i> How are you feeling today?</h3>
+            </div>
+            <div class="card-body">
+                {% if today_entry %}
+                <div class="alert alert-info">You've already logged your mood today. Update it below!</div>
+                {% endif %}
+                <form method="POST">
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between">
+                            {% for value, label in mood_choices %}
+                            <div class="form-check text-center">
+                                <input type="radio" class="btn-check" name="mood" id="mood_{{ value }}" value="{{ value }}" {% if today_entry and today_entry.mood == value %}checked{% endif %} autocomplete="off">
+                                <label class="btn btn-lg btn-outline-{{ 'success' if value in ['excellent', 'good'] else 'warning' if value == 'okay' else 'danger' }}" for="mood_{{ value }}">
+                                    {% if value == 'excellent' %}😄{% elif value == 'good' %}🙂{% elif value == 'okay' %}😐{% elif value == 'bad' %}😔{% else %}😢{% endif %}
+                                    <br><small>{{ label }}</small>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes (optional)</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="What's contributing to this mood?">{{ today_entry.notes or '' }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Triggers (optional)</label>
+                        <input type="text" name="triggers" class="form-control" placeholder="stress, sleep, weather" value="{{ today_entry.triggers or '' }}">
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('mood.index') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-sovereign">
+                            {% if today_entry %}Update Mood{% else %}Log Mood{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

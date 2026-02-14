@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Shared Goals - Sovereign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <a href="{{ url_for('partner.index') }}" class="text-decoration-none small">
+                <i class="bi bi-arrow-left"></i> Back to Partners
+            </a>
+            <h1 class="h4 mt-2"><i class="bi bi-bullseye"></i> Goals with {{ partner.username }}</h1>
+        </div>
+        <a href="{{ url_for('partner.create_goal', partnership_id=partnership.id) }}" class="btn btn-sovereign btn-sm">
+            <i class="bi bi-plus-circle"></i> New Goal
+        </a>
+    </div>
+
+    {% if goals %}
+        {% for goal in goals %}
+        <div class="card mb-3 {{ 'border-success' if goal.is_completed else '' }}">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h5 class="mb-1 {{ 'text-decoration-line-through text-muted' if goal.is_completed else '' }}">
+                            {% if goal.is_completed %}
+                            <i class="bi bi-check-circle text-success"></i>
+                            {% else %}
+                            <i class="bi bi-circle text-muted"></i>
+                            {% endif %}
+                            {{ goal.title }}
+                        </h5>
+                        {% if goal.description %}
+                        <p class="text-muted small mb-2">{{ goal.description }}</p>
+                        {% endif %}
+                        {% if goal.target_date %}
+                        <small class="text-muted">
+                            <i class="bi bi-calendar"></i> Target: {{ goal.target_date.strftime('%Y-%m-%d') }}
+                        </small>
+                        {% endif %}
+                    </div>
+                    {% if not goal.is_completed %}
+                    <form method="POST" action="{{ url_for('partner.complete_goal', goal_id=goal.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-check-lg"></i> Complete
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+                
+                <hr>
+                
+                <h6 class="small text-muted mb-2">Progress Updates</h6>
+                {% if goal.progress_entries %}
+                    {% for progress in goal.progress_entries %}
+                    <div class="border rounded p-2 mb-2">
+                        <small>
+                            <strong>{{ progress.user.username }}</strong>
+                            <span class="text-muted">{{ progress.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </small>
+                        {% if progress.notes %}
+                        <p class="mb-0 small">{{ progress.notes }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p class="text-muted small">No progress updates yet.</p>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('partner.add_progress', goal_id=goal.id) }}" class="mt-2">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="input-group input-group-sm">
+                        <input type="text" name="progress" class="form-control" placeholder="Add a progress update...">
+                        <button type="submit" class="btn btn-outline-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-bullseye display-1 text-muted"></i>
+        <h3 class="mt-3">No Goals Yet</h3>
+        <p class="text-muted">Set goals with {{ partner.username }} to work toward together.</p>
+        <a href="{{ url_for('partner.create_goal', partnership_id=partnership.id) }}" class="btn btn-sovereign">
+            <i class="bi bi-plus-circle"></i> Create First Goal
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

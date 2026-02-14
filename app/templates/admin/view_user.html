@@ -99,7 +99,6 @@
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Trigger</th>
                             <th>Severity</th>
                         </tr>
                     </thead>
@@ -107,7 +106,6 @@
                         {% for relapse in relapses %}
                         <tr>
                             <td>{{ relapse.occurred_at.strftime('%Y-%m-%d') }}</td>
-                            <td>{{ relapse.trigger_type }}</td>
                             <td>
                                 <span class="badge bg-{{ 'danger' if relapse.severity >= 7 else 'warning' if relapse.severity >= 4 else 'success' }}">
                                     {{ relapse.severity }}
@@ -138,7 +136,6 @@
                         <tr>
                             <th>Date</th>
                             <th>Streak</th>
-                            <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -146,7 +143,6 @@
                         <tr>
                             <td>{{ log.completed_at.strftime('%Y-%m-%d %H:%M') }}</td>
                             <td>{{ log.streak_count }}</td>
-                            <td>{{ log.notes or '-' }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

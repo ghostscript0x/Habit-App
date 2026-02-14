@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Create Consistency Builder - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="bi bi-plus-circle"></i> New Consistency Builder</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" name="name" class="form-control" required placeholder="e.g., Morning workout, Read 10 pages">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" rows="2" placeholder="What is this builder for?"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Daily Target</label>
+                        <input type="number" name="target_frequency" class="form-control" value="1" min="1">
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('consistency.index') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-sovereign">Create Builder</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

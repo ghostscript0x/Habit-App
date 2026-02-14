@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}New Journal Entry - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="bi bi-plus-circle"></i> New Journal Entry</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">How are you feeling today?</label>
+                        <select name="mood" class="form-select">
+                            <option value="">Select mood (optional)</option>
+                            {% for value, label in mood_choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">What's on your mind?</label>
+                        <textarea name="content" class="form-control" rows="10" required placeholder="Write your thoughts..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tags</label>
+                        <input type="text" name="tags" class="form-control" placeholder="recovery, motivation, progress">
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('journal.index') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-sovereign">Save Entry</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

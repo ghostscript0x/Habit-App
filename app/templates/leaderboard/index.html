@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Leaderboard - Sovereign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="h3 mb-4"><i class="bi bi-trophy"></i> Leaderboard</h1>
+    
+    <div class="mb-4">
+        <div class="btn-group">
+            <a href="{{ url_for('leaderboard.index', timeframe='all') }}" class="btn btn-sm btn-{{ 'primary' if timeframe == 'all' else 'outline-primary' }}">All Time</a>
+            <a href="{{ url_for('leaderboard.index', timeframe='month') }}" class="btn btn-sm btn-{{ 'primary' if timeframe == 'month' else 'outline-primary' }}">This Month</a>
+            <a href="{{ url_for('leaderboard.index', timeframe='week') }}" class="btn btn-sm btn-{{ 'primary' if timeframe == 'week' else 'outline-primary' }}">This Week</a>
+        </div>
+    </div>
+
+    {% if user_rank_completions or user_rank_streak or user_rank_sobriety %}
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-person"></i> Your Rankings</h5>
+        </div>
+        <div class="card-body">
+            <div class="row text-center g-3">
+                {% if user_rank_completions %}
+                <div class="col-4">
+                    <div class="h4 text-primary">#{{ user_rank_completions }}</div>
+                    <small class="text-muted">Completions</small>
+                </div>
+                {% endif %}
+                {% if user_rank_streak %}
+                <div class="col-4">
+                    <div class="h4 text-warning">#{{ user_rank_streak }}</div>
+                    <small class="text-muted">Streak</small>
+                </div>
+                {% endif %}
+                {% if user_rank_sobriety %}
+                <div class="col-4">
+                    <div class="h4 text-success">#{{ user_rank_sobriety }}</div>
+                    <small class="text-muted">Sobriety</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-check-circle"></i> Most Completions</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for entry in completions_leaderboard %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center {{ 'list-group-item-primary' if entry.id == current_user.id else '' }}">
+                            <div>
+                                <span class="badge bg-dark me-2">#{{ loop.index }}</span>
+                                {{ entry.username }}
+                            </div>
+                            <span class="badge bg-success">{{ entry.total_completions }}</span>
+                        </div>
+                        {% endfor %}
+                        {% if not completions_leaderboard %}
+                        <div class="list-group-item text-muted">No data available</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-fire"></i> Top Streaks (30 days)</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for entry in streak_leaderboard %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center {{ 'list-group-item-primary' if entry.id == current_user.id else '' }}">
+                            <div>
+                                <span class="badge bg-dark me-2">#{{ loop.index }}</span>
+                                {{ entry.username }}
+                            </div>
+                            <span class="badge bg-warning text-dark">{{ entry.streak_days }}</span>
+                        </div>
+                        {% endfor %}
+                        {% if not streak_leaderboard %}
+                        <div class="list-group-item text-muted">No data available</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-heart-pulse"></i> Longest Sobriety</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for entry in sobriety_leaderboard %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center {{ 'list-group-item-primary' if entry.user_id == current_user.id else '' }}">
+                            <div>
+                                <span class="badge bg-dark me-2">#{{ loop.index }}</span>
+                                {{ entry.username }}
+                            </div>
+                            <span class="badge bg-danger">{{ entry.days_sober }} days</span>
+                        </div>
+                        {% endfor %}
+                        {% if not sobriety_leaderboard %}
+                        <div class="list-group-item text-muted">No data available</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

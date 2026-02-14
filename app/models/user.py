@@ -20,6 +20,13 @@ class User(UserMixin, db.Model):
     habits = db.relationship('Habit', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     habit_logs = db.relationship('HabitLog', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     relapse_events = db.relationship('RelapseEvent', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    journal_entries = db.relationship('JournalEntry', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    mood_entries = db.relationship('MoodEntry', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    triggers = db.relationship('Trigger', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    user_achievements = db.relationship('UserAchievement', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    consistency_builders = db.relationship('ConsistencyBuilder', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    addiction_killers = db.relationship('AddictionKiller', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    addiction_sessions = db.relationship('AddictionSession', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'<User {self.username}>'

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Mood Tracker - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h1 class="h4"><i class="bi bi-emoji-smile"></i> Mood Tracker</h1>
+            <a href="{{ url_for('mood.log') }}" class="btn btn-sovereign btn-sm">
+                <i class="bi bi-plus-circle"></i> Log Mood
+            </a>
+        </div>
+        
+        <div class="row mb-4 g-3">
+            <div class="col-md-4 col-12">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <h5 class="card-title small">Average Mood (30 days)</h5>
+                        <h2 class="text-{{ 'success' if avg_mood and avg_mood >= 4 else 'warning' if avg_mood and avg_mood >= 3 else 'danger' }}">
+                            {% if avg_mood %}
+                                {{ "%.1f"|format(avg_mood) }}/5
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title small">Mood Distribution (30 days)</h5>
+                        {% for mood, count in distribution.items() %}
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>{{ mood }}</span>
+                            <span class="badge bg-primary">{{ count }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Recent Entries</h5>
+                        {% if entries %}
+                            {% for entry in entries[:5] %}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>{{ entry.date.strftime('%m/%d') }}</span>
+                                <span class="badge bg-{{ 'success' if entry.mood in ['excellent', 'good'] else 'warning' if entry.mood == 'okay' else 'danger' }}">
+                                    {{ entry.mood }}
+                                </span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No entries yet</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3>History</h3>
+        {% if entries %}
+            {% for entry in entries %}
+            <div class="card mb-2">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>{{ entry.date.strftime('%B %d, %Y') }}</span>
+                        <span class="h4 mb-0 badge bg-{{ 'success' if entry.mood in ['excellent', 'good'] else 'warning' if entry.mood == 'okay' else 'danger' }}">
+                            {{ entry.mood }}
+                        </span>
+                    </div>
+                    {% if entry.notes %}
+                    <p class="mb-0 mt-2 text-muted">{{ entry.notes[:100] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">Start tracking your mood to see patterns over time!</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

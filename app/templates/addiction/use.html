@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Use {{ killer.name }} - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3><i class="bi bi-lightning"></i> Fight Your Craving!</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h5>{{ technique_info.name }}</h5>
+                    <p>{{ technique_info.description }}</p>
+                    <p class="mb-0"><strong>Duration:</strong> {{ technique_info.duration }}</p>
+                </div>
+                
+                <form method="POST">
+                    <div class="mb-4">
+                        <label class="form-label">Craving Intensity (1-10)</label>
+                        <input type="range" class="form-range" min="1" max="10" id="cravingSlider" name="craving_intensity" value="5" oninput="updateSlider(this.value)">
+                        <div class="text-center">
+                            <span id="sliderValue" class="badge bg-danger fs-4">5</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes (optional)</label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="What triggered this craving?"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('addiction.index') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="bi bi-lightning"></i> Use Killer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateSlider(val) {
+    document.getElementById('sliderValue').textContent = val;
+}
+</script>
+{% endblock %}

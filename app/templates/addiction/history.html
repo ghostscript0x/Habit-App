@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ killer.name }} History - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-clock-history"></i> {{ killer.name }} History</h1>
+            <a href="{{ url_for('addiction.index') }}" class="btn btn-secondary">Back</a>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Statistics</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Times Used:</strong> {{ killer.times_used }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Effectiveness Rating:</strong> 
+                        {% if killer.effectiveness_rating %}
+                            {{ killer.effectiveness_rating }}/5
+                        {% else %}
+                            Not rated
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% if sessions %}
+            {% for session in sessions %}
+            <div class="card mb-2">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>{{ session.completed_at.strftime('%B %d, %Y %H:%M') }}</span>
+                        <div>
+                            <span class="badge bg-danger">Before: {{ session.craving_intensity }}</span>
+                            {% if session.after_intensity %}
+                            <span class="badge bg-success">After: {{ session.after_intensity }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if session.notes %}
+                    <p class="mb-0 mt-2 small text-muted">{{ session.notes }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">No sessions yet. Use this killer to fight cravings!</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

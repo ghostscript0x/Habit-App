@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from app.services import HabitService, RelapseService, StreakService
-from datetime import datetime, timezone
+from app.models import HabitLog
+from datetime import datetime, timezone, timedelta
+import json
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -30,13 +32,34 @@ def index():
     relapse_stats = RelapseService.get_relapse_stats(current_user.id)
     recent_relapses = RelapseService.get_user_relapses(current_user.id, limit=5)
     
+    weekly_data = get_weekly_progress(current_user.id)
+    
     return render_template('dashboard/index.html',
                            habits=habit_summaries,
                            total_streak=total_streak,
                            today_completions=len(today_completions),
                            total_habits=len(habits),
                            relapse_stats=relapse_stats,
-                           recent_relapses=recent_relapses)
+                           recent_relapses=recent_relapses,
+                           weekly_data=json.dumps(weekly_data))
+
+
+def get_weekly_progress(user_id):
+    from datetime import date
+    days = []
+    for i in range(6, -1, -1):
+        d = date.today() - timedelta(days=i)
+        count = HabitLog.query.filter(
+            HabitLog.user_id == user_id,
+            HabitLog.completed_at >= datetime(d.year, d.month, d.day),
+            HabitLog.completed_at < datetime(d.year, d.month, d.day) + timedelta(days=1)
+        ).count()
+        days.append({
+            'day': d.strftime('%a'),
+            'date': d.strftime('%m/%d'),
+            'count': count
+        })
+    return days
 
 
 @dashboard_bp.route('/overview')

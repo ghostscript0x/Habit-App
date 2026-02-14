@@ -93,3 +93,7 @@ class HabitService:
             HabitLog.user_id == user_id,
             HabitLog.completed_at >= today_start
         ).all()
+    
+    @staticmethod
+    def get_total_completions(user_id):
+        return HabitLog.query.filter_by(user_id=user_id).count()

@@ -13,43 +13,56 @@
 </div>
 
 <div class="row mb-4">
-    <div class="col-md-3">
+    <div class="col-md-3 col-6">
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-4 streak-fire">
                     <i class="bi bi-fire"></i> {{ total_streak }}
                 </div>
-                <h5 class="card-title">Total Active Streaks</h5>
+                <h5 class="card-title small">Total Active Streaks</h5>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3 col-6">
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-4 text-success">
                     <i class="bi bi-check-circle"></i> {{ today_completions }}
                 </div>
-                <h5 class="card-title">Completed Today</h5>
+                <h5 class="card-title small">Completed Today</h5>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3 col-6">
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-4 text-primary">
                     <i class="bi bi-list-task"></i> {{ total_habits }}
                 </div>
-                <h5 class="card-title">Active Habits</h5>
+                <h5 class="card-title small">Active Habits</h5>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3 col-6">
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="display-4 text-warning">
                     <i class="bi bi-heart-pulse"></i> {{ relapse_stats.total_count }}
                 </div>
-                <h5 class="card-title">Total Relapses</h5>
+                <h5 class="card-title small">Total Relapses</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-graph-up"></i> Weekly Progress</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="weeklyChart" height="80"></canvas>
             </div>
         </div>
     </div>
@@ -144,4 +157,35 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const weeklyData = {{ weekly_data|safe }};
+const ctx = document.getElementById('weeklyChart').getContext('2d');
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: weeklyData.map(d => d.day + ' ' + d.date),
+        datasets: [{
+            label: 'Habits Completed',
+            data: weeklyData.map(d => d.count),
+            backgroundColor: 'rgba(44, 95, 45, 0.7)',
+            borderColor: 'rgba(44, 95, 45, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+</script>
 {% endblock %}

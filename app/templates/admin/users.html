@@ -12,7 +12,8 @@
 <div class="card">
     <div class="card-body">
         {% if users %}
-        <table class="table">
+        <div class="table-responsive">
+        <table class="table table-sm">
             <thead>
                 <tr>
                     <th>Username</th>
@@ -27,7 +28,7 @@
                 {% for user in users %}
                 <tr>
                     <td><a href="{{ url_for('admin.view_user', user_id=user.id) }}">{{ user.username }}</a></td>
-                    <td>{{ user.email }}</td>
+                    <td class="text-break">{{ user.email }}</td>
                     <td>
                         {% if user.is_active %}
                         <span class="badge bg-success">Active</span>
@@ -52,6 +53,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
         
         {% if pagination.pages > 1 %}
         <nav>

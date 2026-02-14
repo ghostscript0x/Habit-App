@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Consistency Builder - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-graph-up-arrow"></i> Consistency Builder</h1>
+            <a href="{{ url_for('consistency.create') }}" class="btn btn-sovereign">
+                <i class="bi bi-plus-circle"></i> New Builder
+            </a>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5>Active Builders</h5>
+                        <h2>{{ stats.active }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5>Total Completions</h5>
+                        <h2>{{ stats.total_completions }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5>Best Streak</h5>
+                        <h2>{{ stats.best_streak }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5>Total Builders</h5>
+                        <h2>{{ stats.total }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% if builders %}
+            {% for builder in builders %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title">
+                                {{ builder.name }}
+                                {% if not builder.is_active %}
+                                <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </h5>
+                            {% if builder.description %}
+                            <p class="card-text">{{ builder.description }}</p>
+                            {% endif %}
+                            <div class="mt-2">
+                                <span class="badge bg-primary">Current Streak: {{ builder.streak_count }}</span>
+                                <span class="badge bg-success">Best: {{ builder.best_count }}</span>
+                                <span class="badge bg-info">Target: {{ builder.target_frequency }}/day</span>
+                            </div>
+                        </div>
+                        <div>
+                            <form method="POST" action="{{ url_for('consistency.complete', builder_id=builder.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Complete</button>
+                            </form>
+                            <a href="{{ url_for('consistency.edit', builder_id=builder.id) }}" class="btn btn-outline-primary">Edit</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">Create a consistency builder to track your daily habits and build momentum!</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

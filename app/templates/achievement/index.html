@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Achievements - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-trophy"></i> Achievements</h1>
+            {% if current_user.is_admin %}
+            <form method="POST" action="{{ url_for('achievement.init') }}">
+                <button type="submit" class="btn btn-outline-primary">Initialize Achievements</button>
+            </form>
+            {% endif %}
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center bg-primary text-white">
+                    <div class="card-body">
+                        <h5>Total Points</h5>
+                        <h2>{{ user_points }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5>Achievements Earned</h5>
+                        <h2>{{ user_achievements|length }} / {{ achievements|length }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5>Total Completions</h5>
+                        <h2>{{ total_completions }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for achievement in achievements %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 {% if achievement.id in earned_ids %}border-success{% endif %}">
+                    <div class="card-body text-center">
+                        <i class="bi {{ achievement.icon or 'bi-star' }} h1 {% if achievement.id in earned_ids %}text-warning{% else %}text-muted{% endif %}"></i>
+                        <h5 class="card-title mt-2">{{ achievement.name }}</h5>
+                        <p class="card-text small">{{ achievement.description }}</p>
+                        {% if achievement.id in earned_ids %}
+                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Earned</span>
+                        {% else %}
+                        <span class="badge bg-secondary">{{ achievement.achievement_type }}: {{ achievement.required_value }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if not achievements %}
+        <div class="alert alert-info">
+            No achievements yet. Admin can initialize them using the button above.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Calendar - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h1 class="h4"><i class="bi bi-calendar3"></i> Habit Calendar</h1>
+            <div class="btn-group">
+                <a href="{{ url_for('calendar.index', year=prev_year, month=prev_month) }}" class="btn btn-outline-secondary btn-sm">&lt;</a>
+                <span class="btn btn-light btn-sm disabled">{{ month_name }} {{ year }}</span>
+                <a href="{{ url_for('calendar.index', year=next_year, month=next_month) }}" class="btn btn-outline-secondary btn-sm">&gt;</a>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body py-2">
+                {% for habit in habits %}
+                <span class="badge me-1 mb-1" style="background-color: {{ ['#2c5f2d', '#97bc62', '#ffc107', '#ff6b35', '#6c5ce7'][loop.index0 % 5] }};">{{ habit.name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm calendar-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for week in month_calendar %}
+                    <tr>
+                        {% for day in week %}
+                        <td class="{% if day == 0 %}bg-light{% elif day == today.day and month == today.month and year == today.year %}table-primary{% endif %}" style="min-width: 60px; min-height: 50px;">
+                            {% if day != 0 %}
+                            <div class="fw-bold small">{{ day }}</div>
+                            {% for habit in habit_data %}
+                                {% if day in habit.dates %}
+                                <div class="small" style="color: {{ ['#2c5f2d', '#97bc62', '#ffc107', '#ff6b35', '#6c5ce7'][loop.index0 % 5] }};">●</div>
+                                {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

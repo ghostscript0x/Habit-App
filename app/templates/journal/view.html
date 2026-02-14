@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ entry.date.strftime('%B %d, %Y') }} - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>{{ entry.date.strftime('%B %d, %Y') }}</h3>
+                <div>
+                    <a href="{{ url_for('journal.edit', entry_id=entry.id) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if entry.mood %}
+                <p><strong>Mood:</strong> <span class="badge bg-{{ 'success' if entry.mood in ['excellent', 'good'] else 'warning' if entry.mood == 'okay' else 'danger' }}">{{ entry.mood }}</span></p>
+                {% endif %}
+                <div class="journal-content">
+                    {{ entry.content }}
+                </div>
+                {% if entry.tags %}
+                <hr>
+                <p class="text-muted"><strong>Tags:</strong> {{ entry.tags }}</p>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('journal.index') }}" class="btn btn-secondary">Back to Journal</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

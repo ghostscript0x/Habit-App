@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Export Data - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h4"><i class="bi bi-download"></i> Export Your Data</h1>
+        
+        <div class="row mb-4 g-3">
+            <div class="col-md-2 col-6">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <h5 class="small">Habits</h5>
+                        <p class="text-muted mb-1">{{ stats.total_habits }}</p>
+                        <a href="{{ url_for('export.export_habits') }}" class="btn btn-outline-primary btn-sm">Export CSV</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <h5 class="small">Completions</h5>
+                        <p class="text-muted mb-1">{{ stats.total_completions }}</p>
+                        <a href="{{ url_for('export.export_logs') }}" class="btn btn-outline-primary btn-sm">Export CSV</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <h5 class="small">Relapses</h5>
+                        <p class="text-muted mb-1">{{ stats.total_relapses }}</p>
+                        <a href="{{ url_for('export.export_relapses') }}" class="btn btn-outline-primary btn-sm">Export CSV</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <h5 class="small">Journal</h5>
+                        <p class="text-muted mb-1">{{ stats.total_journal }}</p>
+                        <a href="{{ url_for('export.export_journal') }}" class="btn btn-outline-primary btn-sm">Export CSV</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <h5 class="small">Mood</h5>
+                        <p class="text-muted mb-1">{{ stats.total_mood }}</p>
+                        <a href="{{ url_for('export.export_mood') }}" class="btn btn-outline-primary btn-sm">Export CSV</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <h5 class="small">All Data</h5>
+                        <p class="text-muted mb-1">Full Backup</p>
+                        <a href="{{ url_for('export.export_all') }}" class="btn btn-outline-primary btn-sm">Export CSV</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

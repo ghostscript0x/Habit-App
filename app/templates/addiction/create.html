@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Create Addiction Killer - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="bi bi-plus-circle"></i> Create Addiction Killer</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" name="name" class="form-control" required placeholder="e.g., 5-Minute Breathing, Call Sponsor">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Target Addiction</label>
+                        <input type="text" name="target_addiction" class="form-control" placeholder="e.g., Alcohol, Gambling, Social Media">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Technique</label>
+                        <select name="technique" class="form-select" required>
+                            <option value="">Select a technique</option>
+                            {% for key, info in techniques.items() %}
+                            <option value="{{ key }}">{{ info.name }} - {{ info.duration }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="Any additional notes..."></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('addiction.index') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-sovereign">Create Killer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
