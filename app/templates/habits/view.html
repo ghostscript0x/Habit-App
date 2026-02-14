@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ habit.name }} - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1><i class="bi bi-check-circle"></i> {{ habit.name }}</h1>
+        <span class="badge bg-secondary">{{ habit.frequency }}</span>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('habits.edit', habit_id=habit.id) }}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <form method="POST" action="{{ url_for('habits.delete', habit_id=habit.id) }}" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure?')">
+                <i class="bi bi-trash"></i> Delete
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-4 streak-fire">
+                    <i class="bi bi-fire"></i> {{ streak_info.current }}
+                </div>
+                <h5>Current Streak</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-4 text-warning">
+                    <i class="bi bi-trophy"></i> {{ streak_info.longest }}
+                </div>
+                <h5>Longest Streak</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Complete Habit</h5>
+                <form method="POST" action="{{ url_for('habits.complete', habit_id=habit.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-3">
+                        <label class="form-label">Notes (optional)</label>
+                        <textarea name="notes" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-check-lg"></i> Mark Complete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if habit.description %}
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Description</h5>
+        <p>{{ habit.description }}</p>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Completions</h5>
+    </div>
+    <div class="card-body">
+        {% if logs %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Streak Count</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.completed_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td><span class="badge bg-warning">{{ log.streak_count }}</span></td>
+                    <td>{{ log.notes or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted text-center">No completions yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

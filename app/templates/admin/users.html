@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users - Sovereign Admin{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1><i class="bi bi-people"></i> Manage Users</h1>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if users %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Admin</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td><a href="{{ url_for('admin.view_user', user_id=user.id) }}">{{ user.username }}</a></td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.is_admin %}
+                        <span class="badge bg-warning">Admin</span>
+                        {% else %}
+                        <span class="badge bg-light text-dark">User</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.view_user', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        {% if pagination.pages > 1 %}
+        <nav>
+            <ul class="pagination">
+                {% if pagination.has_prev %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('admin.users', page=pagination.prev_num) }}">Previous</a></li>
+                {% endif %}
+                <li class="page-item disabled"><span class="page-link">Page {{ pagination.page }} of {{ pagination.pages }}</span></li>
+                {% if pagination.has_next %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('admin.users', page=pagination.next_num) }}">Next</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <p class="text-muted text-center">No users found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

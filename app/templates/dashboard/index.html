@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-0">
+            <i class="bi bi-speedometer2"></i> Welcome back, {{ current_user.username }}!
+        </h1>
+        <p class="text-muted">Track your progress and stay accountable</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-4 streak-fire">
+                    <i class="bi bi-fire"></i> {{ total_streak }}
+                </div>
+                <h5 class="card-title">Total Active Streaks</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-4 text-success">
+                    <i class="bi bi-check-circle"></i> {{ today_completions }}
+                </div>
+                <h5 class="card-title">Completed Today</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-4 text-primary">
+                    <i class="bi bi-list-task"></i> {{ total_habits }}
+                </div>
+                <h5 class="card-title">Active Habits</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="display-4 text-warning">
+                    <i class="bi bi-heart-pulse"></i> {{ relapse_stats.total_count }}
+                </div>
+                <h5 class="card-title">Total Relapses</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-check-circle"></i> Your Habits</h5>
+                <a href="{{ url_for('habits.create') }}" class="btn btn-sm btn-sovereign">
+                    <i class="bi bi-plus-circle"></i> New Habit
+                </a>
+            </div>
+            <div class="card-body">
+                {% if habits %}
+                <div class="row">
+                    {% for habit in habits %}
+                    <div class="col-md-6 mb-3" id="habit-card-{{ habit.id }}">
+                        {% include 'habits/partials/habit_card.html' %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <p class="text-muted mb-3">You haven't created any habits yet.</p>
+                    <a href="{{ url_for('habits.create') }}" class="btn btn-sovereign">
+                        <i class="bi bi-plus-circle"></i> Create Your First Habit
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-graph-up"></i> Recovery Stats</h5>
+            </div>
+            <div class="card-body">
+                {% if relapse_stats.total_count > 0 %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Relapses
+                        <span class="badge bg-warning rounded-pill">{{ relapse_stats.total_count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Avg Severity
+                        <span class="badge bg-info rounded-pill">{{ relapse_stats.avg_severity }}</span>
+                    </li>
+                </ul>
+                <hr>
+                <h6>Trigger Breakdown</h6>
+                <ul class="list-group list-group-flush">
+                    {% for trigger, count in relapse_stats.trigger_breakdown.items() %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ trigger|replace('_', ' ')|title }}
+                        <span class="badge bg-secondary rounded-pill">{{ count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted text-center">No relapse events recorded yet.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Recent Relapses</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_relapses %}
+                <ul class="list-group list-group-flush">
+                    {% for relapse in recent_relapses %}
+                    <li class="list-group-item">
+                        <small class="text-muted">{{ relapse.occurred_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        <br>
+                        <strong>{{ relapse.trigger_type|replace('_', ' ')|title }}</strong>
+                        <span class="badge bg-{{ 'danger' if relapse.severity >= 7 else 'warning' if relapse.severity >= 4 else 'success' }}">
+                            {{ relapse.severity }}/10
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('relapse.index') }}" class="btn btn-sm btn-outline-secondary mt-3">View All</a>
+                {% else %}
+                <p class="text-muted text-center">No recent relapses.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

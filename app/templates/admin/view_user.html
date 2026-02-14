@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.username }} - Sovereign Admin{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1><i class="bi bi-person"></i> {{ user.username }}</h1>
+        <p class="text-muted">{{ user.email }}</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-4 text-primary">{{ total_habits }}</div>
+                <h5>Total Habits</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-4 text-success">{{ total_completions }}</div>
+                <h5>Completions</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-4 text-warning">{{ total_relapses }}</div>
+                <h5>Relapses</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                {% if user.is_active %}
+                <span class="badge bg-success p-3">Active</span>
+                {% else %}
+                <span class="badge bg-secondary p-3">Inactive</span>
+                {% endif %}
+                <h5 class="mt-2">Status</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">User Habits</h5>
+            </div>
+            <div class="card-body">
+                {% if habits %}
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Frequency</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for habit in habits %}
+                        <tr>
+                            <td>{{ habit.name }}</td>
+                            <td>{{ habit.frequency }}</td>
+                            <td>
+                                {% if habit.is_active %}
+                                <span class="badge bg-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No habits created.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Relapses</h5>
+            </div>
+            <div class="card-body">
+                {% if relapses %}
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Trigger</th>
+                            <th>Severity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for relapse in relapses %}
+                        <tr>
+                            <td>{{ relapse.occurred_at.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ relapse.trigger_type }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'danger' if relapse.severity >= 7 else 'warning' if relapse.severity >= 4 else 'success' }}">
+                                    {{ relapse.severity }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No relapses recorded.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Completions</h5>
+            </div>
+            <div class="card-body">
+                {% if habit_logs %}
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Streak</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in habit_logs %}
+                        <tr>
+                            <td>{{ log.completed_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ log.streak_count }}</td>
+                            <td>{{ log.notes or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No completions recorded.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+<div class="d-flex gap-2">
+    <form method="POST" action="{{ url_for('admin.toggle_user_active', user_id=user.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-{{ 'warning' if user.is_active else 'success' }}">
+            <i class="bi bi-{{ 'pause' if user.is_active else 'play' }}-circle"></i>
+            {{ 'Deactivate' if user.is_active else 'Activate' }} User
+        </button>
+    </form>
+    <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}" onsubmit="return confirm('Are you sure? This cannot be undone.');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Delete User
+        </button>
+    </form>
+    <a href="{{ url_for('admin.users') }}" class="btn btn-outline-secondary">Back to Users</a>
+</div>
+{% endblock %}

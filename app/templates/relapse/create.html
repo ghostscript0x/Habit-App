@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Log Relapse Event - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h4 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Log Relapse Event</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('relapse.create') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.trigger_type.label(class="form-label") }}
+                        {% if form.trigger_type.errors %}
+                            {{ form.trigger_type(class="form-select is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.trigger_type.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.trigger_type(class="form-select") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.severity.label(class="form-label") }}
+                        {% if form.severity.errors %}
+                            {{ form.severity(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.severity.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.severity(class="form-control") }}
+                        {% endif %}
+                        <div class="form-text">Rate from 1 (mild) to 10 (severe)</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label") }}
+                        {% if form.notes.errors %}
+                            {{ form.notes(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.notes.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.notes(class="form-control") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning">Log Event</button>
+                        <a href="{{ url_for('relapse.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i> Remember: Tracking is part of recovery. Each event logged helps you understand your patterns.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

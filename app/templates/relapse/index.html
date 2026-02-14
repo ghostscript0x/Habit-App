@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Relapse Tracking - Sovereign{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1><i class="bi bi-heart-pulse"></i> Relapse Tracking</h1>
+        <p class="text-muted">Track your events to understand your triggers</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('relapse.create') }}" class="btn btn-warning">
+            <i class="bi bi-plus-circle"></i> Log Event
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-4 text-warning">
+                    <i class="bi bi-exclamation-triangle"></i> {{ stats.total_count }}
+                </div>
+                <h5>Total Events</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-4 text-info">
+                    <i class="bi bi-graph-up"></i> {{ stats.avg_severity }}
+                </div>
+                <h5>Avg Severity</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Trigger Breakdown</h5>
+                {% if stats.trigger_breakdown %}
+                <ul class="list-group list-group-flush">
+                    {% for trigger, count in stats.trigger_breakdown.items() %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ trigger|replace('_', ' ')|title }}
+                        <span class="badge bg-secondary rounded-pill">{{ count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No data yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Event History</h5>
+    </div>
+    <div class="card-body">
+        {% if relapses %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Trigger</th>
+                    <th>Severity</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for relapse in relapses %}
+                <tr>
+                    <td>{{ relapse.occurred_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ relapse.trigger_type|replace('_', ' ')|title }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'danger' if relapse.severity >= 7 else 'warning' if relapse.severity >= 4 else 'success' }}">
+                            {{ relapse.severity }}/10
+                        </span>
+                    </td>
+                    <td>{{ relapse.notes[:50] if relapse.notes else '-' }}{% if relapse.notes and relapse.notes|length > 50 %}...{% endif %}</td>
+                    <td>
+                        <a href="{{ url_for('relapse.view', relapse_id=relapse.id) }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="text-center py-4">
+            <i class="bi bi-heart-pulse display-1 text-muted"></i>
+            <h4 class="mt-3">No events recorded</h4>
+            <p class="text-muted">This is a good thing! Track your events here when they occur.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
