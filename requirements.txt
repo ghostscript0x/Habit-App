@@ -12,4 +12,4 @@ python-dotenv
 email-validator
 pytest
 pytest-flask
-pytest-cov
+gunicorn
