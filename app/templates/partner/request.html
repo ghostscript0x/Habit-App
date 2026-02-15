@@ -17,14 +17,14 @@
                         {{ form.hidden_tag() }}
                         
                         <div class="mb-3">
-                            {{ form.partner_email.label(class="form-label") }}
-                            {% if form.partner_email.errors %}
-                                {{ form.partner_email(class="form-control is-invalid") }}
+                            {{ form.search.label(class="form-label") }}
+                            {% if form.search.errors %}
+                                {{ form.search(class="form-control is-invalid") }}
                                 <div class="invalid-feedback">
-                                    {% for error in form.partner_email.errors %}{{ error }}{% endfor %}
+                                    {% for error in form.search.errors %}{{ error }}{% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.partner_email(class="form-control") }}
+                                {{ form.search(class="form-control") }}
                             {% endif %}
                         </div>
                         
