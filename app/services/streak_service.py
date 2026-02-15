@@ -10,6 +10,8 @@ class StreakService:
             .order_by(HabitLog.completed_at.desc())\
             .all()
         
+        logs = [log for log in logs if log.completed_at is not None]
+        
         if not logs:
             return 0
         
@@ -20,7 +22,7 @@ class StreakService:
         elif habit.frequency == 'monthly':
             return StreakService._calculate_monthly_streak(logs)
         
-        return logs[0].streak_count if logs else 0
+        return logs[0].streak_count if logs and logs[0].streak_count is not None else 0
     
     @staticmethod
     def _calculate_daily_streak(logs):
@@ -31,6 +33,8 @@ class StreakService:
         current_date = datetime.now(timezone.utc).date()
         
         for log in logs:
+            if not log.completed_at:
+                continue
             log_date = log.completed_at.date()
             
             if log_date == current_date:
@@ -54,6 +58,8 @@ class StreakService:
         current_year = datetime.now(timezone.utc).year
         
         for log in logs:
+            if not log.completed_at:
+                continue
             log_week = log.completed_at.isocalendar()[1]
             log_year = log.completed_at.isocalendar()[0]
             
@@ -78,6 +84,8 @@ class StreakService:
         current_year = datetime.now(timezone.utc).year
         
         for log in logs:
+            if not log.completed_at:
+                continue
             log_month = log.completed_at.month
             log_year = log.completed_at.year
             
@@ -106,6 +114,8 @@ class StreakService:
         prev_date = None
         
         for log in logs:
+            if not log.completed_at:
+                continue
             log_date = log.completed_at.date()
             
             if prev_date is None:

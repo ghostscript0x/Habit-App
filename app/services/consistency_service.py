@@ -95,9 +95,10 @@ class ConsistencyService:
     @staticmethod
     def get_builder_stats(user_id):
         builders = ConsistencyService.get_user_builders(user_id, active_only=False)
+        streak_counts = [b.streak_count for b in builders if b.streak_count is not None]
         return {
             'total': len(builders),
             'active': sum(1 for b in builders if b.is_active),
-            'total_completions': sum(b.current_count for b in builders),
-            'best_streak': max((b.streak_count for b in builders), default=0)
+            'total_completions': sum(b.current_count or 0 for b in builders),
+            'best_streak': max(streak_counts) if streak_counts else 0
         }

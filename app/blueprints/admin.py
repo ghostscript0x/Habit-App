@@ -2,10 +2,25 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from functools import wraps
 from app import db
-from app.models import User, Habit, HabitLog, RelapseEvent
+from app.models import User, Habit, HabitLog, RelapseEvent, Notification
 from app.services import AuthService
+from wtforms import StringField, TextAreaField, SelectField, SubmitField
+from wtforms.validators import DataRequired
+from flask_wtf import FlaskForm
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+
+
+class BroadcastNotificationForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    message = TextAreaField('Message', validators=[DataRequired()])
+    notification_type = SelectField('Type', choices=[
+        ('general', 'General'),
+        ('announcement', 'Announcement'),
+        ('update', 'Update'),
+        ('maintenance', 'Maintenance')
+    ], default='general')
+    submit = SubmitField('Send Notification')
 
 
 def admin_required(f):
@@ -139,3 +154,27 @@ def analytics():
                            daily_completions=daily_completions,
                            daily_relapses=daily_relapses,
                            trigger_distribution=trigger_distribution)
+
+
+@admin_bp.route('/notifications', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def notifications():
+    form = BroadcastNotificationForm()
+    
+    if form.validate_on_submit():
+        users = User.query.filter_by(is_active=True).all()
+        
+        for user in users:
+            notification = Notification()
+            notification.user_id = user.id
+            notification.title = form.title.data
+            notification.message = form.message.data
+            notification.notification_type = form.notification_type.data
+            db.session.add(notification)
+        
+        db.session.commit()
+        flash(f'Notification sent to {len(users)} users!', 'success')
+        return redirect(url_for('admin.notifications'))
+    
+    return render_template('admin/notifications.html', form=form)

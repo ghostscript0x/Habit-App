@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Community - Sovereign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-people"></i> Community</h1>
+        <a href="{{ url_for('community.create') }}" class="btn btn-sovereign">
+            <i class="bi bi-plus-circle"></i> Share Post
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-8">
+            {% if posts.items %}
+                {% for post in posts.items %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-person-circle fs-4 text-muted"></i>
+                                <div>
+                                    <strong>{{ 'Anonymous' if post.is_anonymous else post.user.username }}</strong>
+                                    <small class="text-muted d-block">{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                </div>
+                            </div>
+                            <button class="btn btn-link btn-sm text-muted" data-bs-toggle="modal" data-bs-target="#reportModal{{ post.id }}">
+                                <i class="bi bi-flag"></i>
+                            </button>
+                        </div>
+                        <p class="mb-3">{{ post.content }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex gap-3">
+                                <form method="POST" action="{{ url_for('community.like', post_id=post.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-link text-muted p-0">
+                                        <i class="bi bi-heart{% if current_user.id in post.likes|map(attribute='user_id') %}-fill text-danger{% endif %}"></i> {{ post.likes_count }}
+                                    </button>
+                                </form>
+                                <a href="{{ url_for('community.post', post_id=post.id) }}" class="btn btn-link text-muted p-0">
+                                    <i class="bi bi-chat"></i> {{ post.comments_count }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal fade" id="reportModal{{ post.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Report Post</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form method="POST" action="{{ url_for('community.report', post_id=post.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Reason</label>
+                                        <select name="reason" class="form-select" required>
+                                            <option value="spam">Spam</option>
+                                            <option value="harassment">Harassment</option>
+                                            <option value="inappropriate">Inappropriate Content</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea name="description" class="form-control" rows="3" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-danger">Submit Report</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% if posts.has_prev or posts.has_next %}
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if posts.has_prev %}
+                        <li class="page-item"><a class="page-link" href="{{ url_for('community.index', page=posts.prev_num) }}">Previous</a></li>
+                        {% endif %}
+                        <li class="page-item disabled"><span class="page-link">Page {{ posts.page }} of {{ posts.pages }}</span></li>
+                        {% if posts.has_next %}
+                        <li class="page-item"><a class="page-link" href="{{ url_for('community.index', page=posts.next_num) }}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-people display-1 text-muted"></i>
+                <h3 class="mt-3">No Posts Yet</h3>
+                <p class="text-muted">Be the first to share something motivational!</p>
+                <a href="{{ url_for('community.create') }}" class="btn btn-sovereign">Create Post</a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Points</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="display-4 text-warning">{{ current_user.points or 0 }}</div>
+                    <p class="text-muted">Earn points by:</p>
+                    <ul class="list-unstyled text-start text-muted">
+                        <li><i class="bi bi-check"></i> Creating a post (+5)</li>
+                        <li><i class="bi bi-check"></i> Commenting (+2)</li>
+                        <li><i class="bi bi-check"></i> Logging habits (+1)</li>
+                        <li><i class="bi bi-check"></i> Achieving milestones</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Achievements</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('community.achievements') }}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-trophy"></i> View Achievements
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -11,7 +11,7 @@
         </div>
         
         {% if habit.description %}
-        <p class="card-text text-muted small mt-2">{{ habit.description[:100] }}{% if habit.description|length > 100 %}...{% endif %}</p>
+        <p class="card-text text-muted small mt-2">{{ (habit.description or '')[:100] }}{% if habit.description and habit.description|length > 100 %}...{% endif %}</p>
         {% endif %}
         
         <div class="mt-3">

@@ -69,9 +69,13 @@ def index():
     sobriety_leaderboard.sort(key=lambda x: (-x['days_sober'], x['relapse_count']))
     sobriety_leaderboard = sobriety_leaderboard[:20]
     
+    points_query = User.query.filter_by(is_active=True).order_by(User.points.desc()).limit(20).all()
+    points_leaderboard = [{'id': u.id, 'username': u.username, 'points': u.points} for u in points_query]
+    
     user_rank_completions = None
     user_rank_streak = None
     user_rank_sobriety = None
+    user_rank_points = None
     
     if current_user.is_authenticated:
         for i, entry in enumerate(completions_leaderboard):
@@ -88,12 +92,19 @@ def index():
             if entry['user_id'] == current_user.id:
                 user_rank_sobriety = i + 1
                 break
+        
+        for i, entry in enumerate(points_leaderboard):
+            if entry['id'] == current_user.id:
+                user_rank_points = i + 1
+                break
     
     return render_template('leaderboard/index.html',
                           completions_leaderboard=completions_leaderboard,
                           streak_leaderboard=streak_leaderboard,
                           sobriety_leaderboard=sobriety_leaderboard,
+                          points_leaderboard=points_leaderboard,
                           timeframe=timeframe,
                           user_rank_completions=user_rank_completions,
                           user_rank_streak=user_rank_streak,
-                          user_rank_sobriety=user_rank_sobriety)
+                          user_rank_sobriety=user_rank_sobriety,
+                          user_rank_points=user_rank_points)

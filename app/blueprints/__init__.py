@@ -14,6 +14,8 @@ from app.blueprints.help import help_bp
 from app.blueprints.leaderboard import leaderboard_bp
 from app.blueprints.partner import partner_bp
 from app.blueprints.landing import landing_bp
+from app.blueprints.profile import profile_bp
+from app.blueprints.community import community_bp
 
 
 def register_blueprints(app):
@@ -34,3 +36,5 @@ def register_blueprints(app):
     app.register_blueprint(help_bp)
     app.register_blueprint(leaderboard_bp)
     app.register_blueprint(partner_bp)
+    app.register_blueprint(profile_bp)
+    app.register_blueprint(community_bp)

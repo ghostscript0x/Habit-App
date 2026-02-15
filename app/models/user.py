@@ -13,6 +13,11 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
+    theme = db.Column(db.String(20), default='light')
+    points = db.Column(db.Integer, default=0)
+    streak_freezes = db.Column(db.Integer, default=0)
+    daily_challenge_completed = db.Column(db.Boolean, default=False)
+    daily_challenge_date = db.Column(db.Date, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), 
                           onupdate=lambda: datetime.now(timezone.utc))

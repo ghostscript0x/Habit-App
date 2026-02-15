@@ -208,6 +208,7 @@
                             <li><a class="dropdown-item" href="{{ url_for('consistency.index') }}"><i class="bi bi-graph-up-arrow"></i> Consistency</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('addiction.index') }}"><i class="bi bi-shield-slash"></i> Addiction Killer</a></li>
                             <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('community.index') }}"><i class="bi bi-people"></i> Community</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('calendar.index') }}"><i class="bi bi-calendar3"></i> Calendar</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('export.index') }}"><i class="bi bi-download"></i> Export Data</a></li>
                             <li><hr class="dropdown-divider"></li>
@@ -215,10 +216,16 @@
                         </ul>
                     </li>
                     {% if current_user.is_admin %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.index') }}">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                             <i class="bi bi-gear"></i> Admin
                         </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('admin.index') }}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin.users') }}"><i class="bi bi-people"></i> Users</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin.analytics') }}"><i class="bi bi-graph-up"></i> Analytics</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin.notifications') }}"><i class="bi bi-bell"></i> Send Notification</a></li>
+                        </ul>
                     </li>
                     {% endif %}
                 </ul>
@@ -236,8 +243,15 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle"></i> {{ current_user.username }}
+                            {% if current_user.points and current_user.points > 0 %}
+                            <span class="badge bg-warning text-dark">{{ current_user.points }} pts</span>
+                            {% endif %}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('profile.index') }}"><i class="bi bi-person"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('profile.edit') }}"><i class="bi bi-gear"></i> Settings</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('profile.prevention_plans') }}"><i class="bi bi-shield-check"></i> Prevention Plans</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                         </ul>
                     </li>

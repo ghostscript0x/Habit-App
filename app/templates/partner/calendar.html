@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Calendar - Sovereign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ url_for('partner.goals', partnership_id=partnership.id) }}" class="text-decoration-none small">
+                <i class="bi bi-arrow-left"></i> Back to Goals
+            </a>
+            <h1 class="h4 mt-2"><i class="bi bi-calendar3"></i> Goals Calendar with {{ partner.username }}</h1>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="mb-3">Upcoming & Active Goals</h5>
+            {% if goals %}
+                <div class="list-group">
+                    {% for goal in goals %}
+                    <div class="list-group-item {% if goal.is_completed %}opacity-50{% endif %}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">
+                                    {% if goal.is_completed %}
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    {% else %}
+                                    <i class="bi bi-circle text-muted"></i>
+                                    {% endif %}
+                                    {{ goal.title }}
+                                </h6>
+                                {% if goal.target_date %}
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar"></i> {{ goal.target_date.strftime('%Y-%m-%d') }}
+                                </small>
+                                {% endif %}
+                                {% if goal.category %}
+                                <span class="badge bg-secondary ms-2">{{ goal.category }}</span>
+                                {% endif %}
+                            </div>
+                            <span class="badge bg-{% if goal.is_completed %}success{% else %}primary{% endif %}">
+                                {{ goal.frequency }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No goals yet. Create one to see it here!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

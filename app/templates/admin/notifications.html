@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Send Notification - Sovereign Admin{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1><i class="bi bi-bell"></i> Send Notification</h1>
+        <p class="text-muted">Broadcast a notification to all active users.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Broadcast Notification</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.title.label(class="form-label") }}
+                        {% if form.title.errors %}
+                            {{ form.title(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.title.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.title(class="form-control") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.message.label(class="form-label") }}
+                        {% if form.message.errors %}
+                            {{ form.message(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.message.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.message(class="form-control", rows=5) }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notification_type.label(class="form-label") }}
+                        {% if form.notification_type.errors %}
+                            {{ form.notification_type(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.notification_type.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.notification_type(class="form-select") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Send to All Users
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Notification Types</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>General</strong> - Standard notifications
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Announcement</strong> - Important announcements
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Update</strong> - Feature or app updates
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Maintenance</strong> - Scheduled maintenance alerts
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

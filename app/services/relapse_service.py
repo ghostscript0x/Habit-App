@@ -89,11 +89,13 @@ class RelapseService:
             }
         
         total_count = len(relapses)
-        avg_severity = sum(r.severity for r in relapses) / total_count
+        severities = [r.severity for r in relapses if r.severity is not None]
+        avg_severity = sum(severities) / len(severities) if severities else 0
         
         trigger_breakdown = {}
         for r in relapses:
-            trigger_breakdown[r.trigger_type] = trigger_breakdown.get(r.trigger_type, 0) + 1
+            if r.trigger_type:
+                trigger_breakdown[r.trigger_type] = trigger_breakdown.get(r.trigger_type, 0) + 1
         
         return {
             'total_count': total_count,

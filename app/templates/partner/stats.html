@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Stats with {{ partner.username }} - Sovereign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ url_for('partner.goals', partnership_id=partnership.id) }}" class="text-decoration-none small">
+                <i class="bi bi-arrow-left"></i> Back to Goals
+            </a>
+            <h1 class="h4 mt-2"><i class="bi bi-graph-up"></i> Stats with {{ partner.username }}</h1>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ partner.username }}'s Activity</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="display-4 text-primary">{{ partner.username }}</div>
+                    <p class="text-muted">Partner</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Partnership</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="display-6 text-success">{{ completed_goals }}/{{ total_goals }}</div>
+                            <small class="text-muted">Goals Completed</small>
+                        </div>
+                        <div class="col-6">
+                            <div class="display-6 text-info">{{ partner_weekly }}</div>
+                            <small class="text-muted">Partner's Habits (7 days)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-4 text-success">{{ partner_completions }}</div>
+                    <h5>Total Habit Completions</h5>
+                    <p class="text-muted">All time</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-4 text-warning">{{ partner_weekly }}</div>
+                    <h5>Weekly Completions</h5>
+                    <p class="text-muted">Last 7 days</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-4 text-primary">{{ completed_goals }}</div>
+                    <h5>Shared Goals Done</h5>
+                    <p class="text-muted">Completed together</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

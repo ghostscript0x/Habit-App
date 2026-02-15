@@ -86,6 +86,6 @@ class TriggerService:
         return {
             'total': len(triggers),
             'active': sum(1 for t in triggers if t.is_active),
-            'total_encountered': sum(t.times_encountered for t in triggers),
-            'total_overcome': sum(t.times_overcome for t in triggers)
+            'total_encountered': sum(t.times_encountered or 0 for t in triggers),
+            'total_overcome': sum(t.times_overcome or 0 for t in triggers)
         }

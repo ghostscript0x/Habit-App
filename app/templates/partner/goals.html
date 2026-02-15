@@ -11,9 +11,20 @@
             </a>
             <h1 class="h4 mt-2"><i class="bi bi-bullseye"></i> Goals with {{ partner.username }}</h1>
         </div>
-        <a href="{{ url_for('partner.create_goal', partnership_id=partnership.id) }}" class="btn btn-sovereign btn-sm">
-            <i class="bi bi-plus-circle"></i> New Goal
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('partner.chat', partnership_id=partnership.id) }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-chat-dots"></i> Chat
+            </a>
+            <a href="{{ url_for('partner.partner_stats', partnership_id=partnership.id) }}" class="btn btn-outline-info btn-sm">
+                <i class="bi bi-graph-up"></i> Stats
+            </a>
+            <a href="{{ url_for('partner.calendar', partnership_id=partnership.id) }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-calendar3"></i> Calendar
+            </a>
+            <a href="{{ url_for('partner.create_goal', partnership_id=partnership.id) }}" class="btn btn-sovereign btn-sm">
+                <i class="bi bi-plus-circle"></i> New Goal
+            </a>
+        </div>
     </div>
 
     {% if goals %}
@@ -33,14 +44,19 @@
                         {% if goal.description %}
                         <p class="text-muted small mb-2">{{ goal.description }}</p>
                         {% endif %}
-                        <small class="text-muted">
-                            <i class="bi bi-clock"></i> {{ goal.frequency|title }}
-                        </small>
-                        {% if goal.target_date %}
-                        <small class="text-muted ms-2">
-                            <i class="bi bi-calendar"></i> Target: {{ goal.target_date.strftime('%Y-%m-%d') }}
-                        </small>
-                        {% endif %}
+                        <div class="d-flex gap-2 flex-wrap">
+                            <small class="text-muted">
+                                <i class="bi bi-clock"></i> {{ goal.frequency|title }}
+                            </small>
+                            {% if goal.category %}
+                            <span class="badge bg-secondary">{{ goal.category }}</span>
+                            {% endif %}
+                            {% if goal.target_date %}
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i> Target: {{ goal.target_date.strftime('%Y-%m-%d') }}
+                            </small>
+                            {% endif %}
+                        </div>
                     </div>
                     {% set progress_user_ids = goal.progress_entries|map(attribute='user_id')|list %}
                     {% if not goal.is_completed %}
@@ -55,6 +71,40 @@
                     {% endif %}
                     {% endif %}
                 </div>
+                
+                {% if goal.milestones %}
+                <hr>
+                <h6 class="small text-muted mb-2">Milestones</h6>
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                    {% for milestone in goal.milestones|sort(attribute='order') %}
+                    <div class="d-flex align-items-center gap-1">
+                        {% if milestone.is_completed %}
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        {% else %}
+                        <form method="POST" action="{{ url_for('partner.complete_milestone', milestone_id=milestone.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-link btn-sm p-0 text-muted" title="Mark complete">
+                                <i class="bi bi-circle"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                        <span class="{{ 'text-decoration-line-through text-muted' if milestone.is_completed else '' }}">{{ milestone.title }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <form method="POST" action="{{ url_for('partner.add_milestone', goal_id=goal.id) }}" class="d-flex gap-2">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="text" name="title" class="form-control form-control-sm" placeholder="Add milestone..." required>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Add</button>
+                </form>
+                {% else %}
+                <hr>
+                <form method="POST" action="{{ url_for('partner.add_milestone', goal_id=goal.id) }}" class="d-flex gap-2 mb-2">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="text" name="title" class="form-control form-control-sm" placeholder="Add milestone..." required>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Add Milestone</button>
+                </form>
+                {% endif %}
                 
                 <hr>
                 

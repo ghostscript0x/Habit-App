@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Sovereign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-person-circle display-1 text-primary"></i>
+                    <h3 class="mt-3">{{ current_user.username }}</h3>
+                    <p class="text-muted">{{ current_user.email }}</p>
+                    <div class="d-flex justify-content-center gap-3 mt-3">
+                        <div>
+                            <div class="display-6 text-warning">{{ current_user.points or 0 }}</div>
+                            <small class="text-muted">Points</small>
+                        </div>
+                        <div>
+                            <div class="display-6 text-info">{{ current_user.streak_freezes or 0 }}</div>
+                            <small class="text-muted">Streak Freezes</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row g-4">
+                <div class="col-6">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <div class="display-4 text-success">{{ total_habits }}</div>
+                            <h5>Active Habits</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <div class="display-4 text-primary">{{ total_completions }}</div>
+                            <h5>Total Completions</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <div class="display-4 text-info">{{ weekly_completions }}</div>
+                            <h5>This Week</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <div class="display-4 text-warning">{{ total_journals }}</div>
+                            <h5>Journal Entries</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{{ url_for('profile.edit') }}" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Edit Profile
+        </a>
+        <a href="{{ url_for('profile.password') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-key"></i> Change Password
+        </a>
+        <a href="{{ url_for('profile.prevention_plans') }}" class="btn btn-outline-primary">
+            <i class="bi bi-shield-check"></i> Prevention Plans
+        </a>
+        <a href="{{ url_for('profile.export_data') }}" class="btn btn-outline-info" target="_blank">
+            <i class="bi bi-download"></i> Export My Data
+        </a>
+    </div>
+
+    {% if current_user.streak_freezes and current_user.streak_freezes > 0 %}
+    <div class="card mt-4 border-warning">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5><i class="bi bi-snow"></i> Streak Freeze Available!</h5>
+                    <p class="mb-0">Use a streak freeze to protect your streak if you miss a day.</p>
+                </div>
+                <form method="POST" action="{{ url_for('profile.use_streak_freeze') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-warning">Use Freeze</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
