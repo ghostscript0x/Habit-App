@@ -14,6 +14,7 @@
                 <div class="alert alert-info">You've already logged your mood today. Update it below!</div>
                 {% endif %}
                 <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-4">
                         <div class="d-flex justify-content-between">
                             {% for value, label in mood_choices %}

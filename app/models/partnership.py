@@ -33,6 +33,7 @@ class SharedGoal(db.Model):
     partnership_id = db.Column(db.String(36), db.ForeignKey('partnerships.id'), nullable=False, index=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
+    frequency = db.Column(db.String(20), nullable=False, default='daily')
     target_date = db.Column(db.DateTime, nullable=True)
     is_completed = db.Column(db.Boolean, default=False)
     completed_at = db.Column(db.DateTime, nullable=True)
@@ -51,6 +52,7 @@ class SharedGoal(db.Model):
             'partnership_id': self.partnership_id,
             'title': self.title,
             'description': self.description,
+            'frequency': self.frequency,
             'target_date': self.target_date.isoformat() if self.target_date else None,
             'is_completed': self.is_completed,
             'completed_at': self.completed_at.isoformat() if self.completed_at else None,

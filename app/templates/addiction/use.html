@@ -17,6 +17,7 @@
                 </div>
                 
                 <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-4">
                         <label class="form-label">Craving Intensity (1-10)</label>
                         <input type="range" class="form-range" min="1" max="10" id="cravingSlider" name="craving_intensity" value="5" oninput="updateSlider(this.value)">

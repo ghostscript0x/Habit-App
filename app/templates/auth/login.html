@@ -29,14 +29,19 @@
                     
                     <div class="mb-3">
                         {{ form.password.label(class="form-label") }}
-                        {% if form.password.errors %}
-                            {{ form.password(class="form-control is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.password.errors %}{{ error }}{% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.password(class="form-control") }}
-                        {% endif %}
+                        <div class="password-wrapper position-relative">
+                            {% if form.password.errors %}
+                                {{ form.password(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.password(class="form-control", id="password") }}
+                            {% endif %}
+                            <button type="button" class="btn btn-sm password-toggle position-absolute" style="right: 8px; top: 50%; transform: translateY(-50%); border: none; background: transparent;">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="mb-3 form-check">

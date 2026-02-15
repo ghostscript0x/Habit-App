@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.models import Partnership, SharedGoal, SharedGoalProgress, User
 from datetime import datetime, timezone
-from wtforms import StringField, TextAreaField, DateField, SubmitField
+from wtforms import StringField, TextAreaField, DateField, SelectField, SubmitField
 from wtforms.validators import DataRequired
 from flask_wtf import FlaskForm
 
@@ -18,6 +18,7 @@ class PartnershipForm(FlaskForm):
 class SharedGoalForm(FlaskForm):
     title = StringField('Goal Title', validators=[DataRequired()])
     description = TextAreaField('Description')
+    frequency = SelectField('Frequency', choices=[('daily', 'Daily'), ('weekly', 'Weekly'), ('minutely', 'Minutely')], default='daily')
     target_date = DateField('Target Date', format='%Y-%m-%d')
     submit = SubmitField('Create Goal')
 
@@ -157,6 +158,7 @@ def create_goal(partnership_id):
         goal.partnership_id = partnership_id
         goal.title = form.title.data
         goal.description = form.description.data
+        goal.frequency = form.frequency.data
         goal.target_date = form.target_date.data
         db.session.add(goal)
         db.session.commit()
@@ -176,6 +178,11 @@ def complete_goal(goal_id):
     if current_user.id not in [partnership.user1_id, partnership.user2_id]:
         flash('Invalid access.', 'danger')
         return redirect(url_for('partner.index'))
+    
+    progress_user_ids = set(p.user_id for p in goal.progress_entries)
+    if partnership.user1_id not in progress_user_ids or partnership.user2_id not in progress_user_ids:
+        flash('Both partners must add progress before completing the goal.', 'warning')
+        return redirect(url_for('partner.goals', partnership_id=partnership.id))
     
     goal.is_completed = True
     goal.completed_at = datetime.now(timezone.utc)

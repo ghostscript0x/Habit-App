@@ -33,19 +33,26 @@
                         {% if goal.description %}
                         <p class="text-muted small mb-2">{{ goal.description }}</p>
                         {% endif %}
-                        {% if goal.target_date %}
                         <small class="text-muted">
+                            <i class="bi bi-clock"></i> {{ goal.frequency|title }}
+                        </small>
+                        {% if goal.target_date %}
+                        <small class="text-muted ms-2">
                             <i class="bi bi-calendar"></i> Target: {{ goal.target_date.strftime('%Y-%m-%d') }}
                         </small>
                         {% endif %}
                     </div>
+                    {% set progress_user_ids = goal.progress_entries|map(attribute='user_id')|list %}
                     {% if not goal.is_completed %}
                     <form method="POST" action="{{ url_for('partner.complete_goal', goal_id=goal.id) }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="btn btn-sm btn-outline-success">
+                        <button type="submit" class="btn btn-sm btn-outline-success" {{ 'disabled' if partnership.user1_id not in progress_user_ids or partnership.user2_id not in progress_user_ids else '' }}>
                             <i class="bi bi-check-lg"></i> Complete
                         </button>
                     </form>
+                    {% if partnership.user1_id not in progress_user_ids or partnership.user2_id not in progress_user_ids %}
+                    <small class="text-warning d-block text-end" style="font-size: 0.7rem;">Both partners must add progress</small>
+                    {% endif %}
                     {% endif %}
                 </div>
                 

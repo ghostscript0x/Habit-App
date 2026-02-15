@@ -303,6 +303,22 @@
                 }, 5000);
             });
         });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.password-toggle').forEach(function(toggle) {
+                toggle.addEventListener('click', function() {
+                    const input = this.closest('.password-wrapper').querySelector('input');
+                    const icon = this.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.replace('bi-eye', 'bi-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.replace('bi-eye-slash', 'bi-eye');
+                    }
+                });
+            });
+        });
     </script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {% block extra_js %}{% endblock %}

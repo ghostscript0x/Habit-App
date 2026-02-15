@@ -11,6 +11,8 @@
             </div>
             <div class="card-body">
                 <form method="POST">
+                    {{ form.hidden_tag() if form else '' }}
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-3">
                         <label class="form-label">How are you feeling today?</label>
                         <select name="mood" class="form-select">

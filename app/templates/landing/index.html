@@ -21,6 +21,7 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
+            padding-top: 60px;
         }
         .hero-content {
             color: white;
@@ -61,6 +62,54 @@
             border: none;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        .navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+        }
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: rgba(44, 95, 45, 0.95);
+                padding: 1rem;
+                border-radius: 0.5rem;
+                margin-top: 0.5rem;
+            }
+            .hero-section {
+                min-height: auto;
+                padding: 80px 0 40px;
+            }
+        }
+        @media (max-width: 767px) {
+            .display-3 {
+                font-size: 2rem !important;
+            }
+            .display-4 {
+                font-size: 1.75rem !important;
+            }
+            h1, .h1 {
+                font-size: 1.5rem;
+            }
+            h2, .h2 {
+                font-size: 1.25rem;
+            }
+            .hero-content {
+                text-align: center;
+            }
+            .hero-content .d-flex.gap-3 {
+                justify-content: center;
+            }
+            .hero-content .mt-5 {
+                margin-top: 2rem !important;
+            }
+            .hero-content .d-flex.gap-4 {
+                justify-content: center;
+            }
+            .testimonial-card .card-body {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -69,12 +118,17 @@
             <a class="navbar-brand" href="/">
                 <i class="bi bi-shield-check"></i> Sovereign
             </a>
-            <div class="d-flex align-items-center gap-3">
-                <a href="https://github.com/ghostscript0x/Habit-App" target="_blank" class="text-white" title="GitHub">
-                    <i class="bi bi-github fs-5"></i>
-                </a>
-                <a class="btn btn-outline-light btn-sm" href="{{ url_for('auth.login') }}">Login</a>
-                <a class="btn btn-sovereign btn-sm" href="{{ url_for('auth.register') }}">Get Started</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="bi bi-list text-white fs-4"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="ms-auto d-flex align-items-center gap-3 flex-wrap">
+                    <a href="https://github.com/ghostscript0x/Habit-App" target="_blank" class="text-white" title="GitHub">
+                        <i class="bi bi-github fs-5"></i>
+                    </a>
+                    <a class="btn btn-outline-light btn-sm" href="{{ url_for('auth.login') }}">Login</a>
+                    <a class="btn btn-sovereign btn-sm" href="{{ url_for('auth.register') }}">Get Started</a>
+                </div>
             </div>
         </div>
     </nav>

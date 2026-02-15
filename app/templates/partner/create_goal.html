@@ -41,6 +41,18 @@
                         </div>
                         
                         <div class="mb-3">
+                            {{ form.frequency.label(class="form-label") }}
+                            {% if form.frequency.errors %}
+                                {{ form.frequency(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.frequency.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.frequency(class="form-select") }}
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
                             {{ form.target_date.label(class="form-label") }}
                             {% if form.target_date.errors %}
                                 {{ form.target_date(class="form-control is-invalid") }}
