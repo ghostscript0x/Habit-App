@@ -1,29 +1,21 @@
 # Gunicorn configuration for production
 import os
 import multiprocessing
+from dotenv import load_dotenv
 
-# Server socket
-bind = f"0.0.0.0:{os.environ.get('PORT', '8000')}"
+# Load environment variables from .env file
+load_dotenv()
+
+# Server socket - Use PORT from .env or environment
+port = os.environ.get("PORT") or os.getenv("PORT", "8000")
+bind = f"0.0.0.0:{port}"
 backlog = 2048
 
 # Worker processes
 workers = 4
-worker_class = "gunicorn.workers.ggevent.GeventWorker"
-worker_connections = 1000
+worker_class = "sync"  # Use sync worker to avoid gevent warnings
 timeout = 60
 keepalive = 5
-
-
-# Early monkey-patch for gevent
-def post_fork(server, worker):
-    """Called just after a worker has been forked"""
-    server.log.info("Worker spawned (pid: %s)", worker.pid)
-
-
-def when_ready(server):
-    """Called just before the master process is initialized"""
-    pass
-
 
 # Logging
 accesslog = "-"
@@ -35,17 +27,7 @@ proc_name = "sovereign_habit_app"
 
 # Server mechanics
 daemon = False
-pidfile = None
-umask = 0
-user = None
-group = None
-tmp_upload_dir = None
-
-# SSL
-keyfile = None
-certfile = None
 
 # Production optimizations
 max_requests = 10000
 max_requests_jitter = 1000
-preload_app = False
