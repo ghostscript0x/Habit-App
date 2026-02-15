@@ -13,3 +13,5 @@ email-validator
 pytest
 pytest-flask
 gunicorn
+redis
+flask-caching

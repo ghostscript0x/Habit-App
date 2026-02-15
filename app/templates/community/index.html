@@ -32,10 +32,10 @@
                         <p class="mb-3">{{ post.content }}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex gap-3">
-                                <form method="POST" action="{{ url_for('community.like', post_id=post.id) }}" class="d-inline">
+                                <form method="POST" action="{{ url_for('community.like', post_id=post.id) }}" class="d-inline like-form" data-post-id="{{ post.id }}">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn btn-link text-muted p-0">
-                                        <i class="bi bi-heart{% if current_user.id in post.likes|map(attribute='user_id') %}-fill text-danger{% endif %}"></i> {{ post.likes_count }}
+                                        <i class="bi bi-heart{% if post.id in liked_post_ids %}-fill text-danger{% endif %}"></i> <span class="likes-count">{{ post.likes_count }}</span>
                                     </button>
                                 </form>
                                 <a href="{{ url_for('community.post', post_id=post.id) }}" class="btn btn-link text-muted p-0">
@@ -133,4 +133,41 @@
         </div>
     </div>
 </div>
+
+<script>
+document.querySelectorAll('.like-form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const url = form.getAttribute('action');
+        const icon = form.querySelector('i');
+        const countSpan = form.querySelector('.likes-count');
+        
+        // INSTANT UI UPDATE - no waiting for server
+        let currentCount = parseInt(countSpan.textContent) || 0;
+        
+        if (icon.classList.contains('bi-heart-fill')) {
+            // Unlike instantly
+            icon.classList.remove('bi-heart-fill', 'text-danger');
+            icon.classList.add('bi-heart');
+            countSpan.textContent = Math.max(0, currentCount - 1);
+        } else {
+            // Like instantly
+            icon.classList.remove('bi-heart');
+            icon.classList.add('bi-heart-fill', 'text-danger');
+            countSpan.textContent = currentCount + 1;
+        }
+        
+        // Send request in background (fire and forget)
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).catch(error => console.error('Error:', error));
+    });
+});
+</script>
 {% endblock %}
